@@ -1,117 +1,88 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using System.IO;
 
-
-namespace Лаба_7__Windows_form_12__2
+namespace Лаба_8__Графік
 {
-    public partial class Form2 : Form
+    public partial class Form1 : Form
     {
-        /// <summary>
-        /// String with question and answer
-        /// </summary>
-        List<string> strMass;
-        /// <summary>
-        /// array with question + 4 answer and array with true answer
-        /// </summary>
-        string[] all_question_with_answer, only_question;
-        /// <summary>
-        /// need for count asks
-        /// </summary>
-        int number_of_current_question,
-            count_true_answer;
-        const string name_of_main_form = "Ponomaenko M.I. (CE-1 var15)";
+        float x1, x2, a;
+        Form3 form;
 
-        public Form2()
+        public Form1()
         {
             InitializeComponent();
-            strMass = new List<string>();
-            number_of_current_question = 0;// amoung of strong in file start from 0
-            count_true_answer = 0;
-            using (StreamReader sr = new StreamReader("test.txt", Encoding.GetEncoding(1251)))
-            {
-                while (!sr.EndOfStream)
-                    strMass.Add(sr.ReadLine());
-            }
-            
-            nextAsk();
+            x1 =(float) Convert.ToDouble(textBox_for_x1.Text);
+            x2 = (float)Convert.ToDouble(textBox_for_x2.Text);
+            a = (float)Convert.ToDouble(textBox_for_a.Text);
         }
 
-        /// <summary>
-        /// Open next ask
-        /// </summary>
-        private void nextAsk()
+        private void textBox_for_x1_Validating(object sender, CancelEventArgs e)
         {
-            if (number_of_current_question < strMass.Count)
+            if (textBox_for_x1.Text == "")
             {
-                all_question_with_answer = strMass[number_of_current_question].Split('#'); /// Divide all string on two substring: all question and a answer
-                only_question = all_question_with_answer[0].Split('@');//Divide on question and four variant answer
-                label1.Text = only_question[0];//Question
-                radioButton1.Checked = false;
-                radioButton2.Checked = false;
-                radioButton3.Checked = false;
-                radioButton4.Checked = false;
-                radioButton1.Text = only_question[1];//first answer
-                radioButton2.Text = only_question[2];//second answer
-                radioButton3.Text = only_question[3];
-                radioButton4.Text = only_question[4];
+                errorProvider1.SetError(textBox_for_x1, "");
+                return;
             }
-            else//when asks are ended, we hide this form and return to main form
+            if (!float.TryParse((textBox_for_x1.Text), out x1))
             {
-                MessageBox.Show("You have " + count_true_answer + " true answer", "Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                MdiParent.Text = name_of_main_form;
-                Close();
+                errorProvider1.SetError(textBox_for_x1, "You entered not number");
+                return;
             }
-
+            if (x2 < x1)
+            {
+                errorProvider1.SetError(textBox_for_x1, "x1 can not be higher than x2");
+                return;
+            }
+            errorProvider1.SetError(textBox_for_x1, "");
         }
 
-        private void Form2_Activated(object sender, EventArgs e)
+        private void button_for_draw_function_Click(object sender, EventArgs e)
         {
-            Text = "File №" + (Array.IndexOf((MdiParent.MdiChildren), this) + 1);
-            MdiParent.Text = name_of_main_form + ") File №" + (Array.IndexOf((MdiParent.MdiChildren), this) + 1);
-            MdiParent.Refresh();
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            DialogResult dialog = MessageBox.Show("Are you sure, that you want to finish the test?", "End of programm", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-            if (dialog == DialogResult.Yes)
+            if (!(
+                errorProvider1.GetError(textBox_for_x1) == "") ||
+                errorProvider1.GetError(textBox_for_x2) == "" ||
+                errorProvider1.GetError(textBox_for_a) == ""
+                )
             {
-                MdiParent.Text = name_of_main_form;
-                //if (MdiParent.MdiChildren[0] != null)
-                //    MdiParent.MdiChildren[0].Activate();
-                Close();
+                form = new Form3(x1, x2, a);
+                form.Show();
             }
+            else
+                MessageBox.Show("You must entered correct your mistakes", "Wrong", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
-
-
-        /// <summary>
-        ///When user press botton "Next" programm check trueing result
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void button1_Click(object sender, EventArgs e)
+        private void textBox_for_x2_Validating(object sender, CancelEventArgs e)
         {
-            if (radioButton1.Checked == true)
-                if (all_question_with_answer[1] == radioButton1.Text)
-                    ++count_true_answer;
-            if (radioButton2.Checked == true)
-                if (all_question_with_answer[1] == radioButton2.Text)
-                    ++count_true_answer;
-            if (radioButton3.Checked == true)
-                if (all_question_with_answer[1] == radioButton3.Text)
-                    ++count_true_answer;
-            if (radioButton4.Checked == true)
-                if (all_question_with_answer[1] == radioButton4.Text)
-                    ++count_true_answer;
-            ++number_of_current_question;
-            nextAsk();
+            if(textBox_for_x2.Text == "")
+            {
+                errorProvider1.SetError(textBox_for_x2, "Fiels is empty");
+                return;
+            }
+            if (!float.TryParse((textBox_for_x2.Text), out x2))
+            {
+                errorProvider1.SetError(textBox_for_x2, "You entered not number");
+                return;
+            }
+            if (x2 < x1)
+            {
+                errorProvider1.SetError(textBox_for_x2, "x2 can not be less than x1");
+                return;
+            }
+            errorProvider1.SetError(textBox_for_x2, "");
+        }
+        private void textBox_for_a_Validating(object sender, CancelEventArgs e)
+        {
+            if (textBox_for_a.Text == "")
+            {
+                errorProvider1.SetError(textBox_for_a, "Fiels is empty");
+                return;
+            }
+            if (!float.TryParse((textBox_for_a.Text), out a))
+            {
+                errorProvider1.SetError(textBox_for_x2, "You entered not number");
+                return;
+            }
+            errorProvider1.SetError(textBox_for_x2, "");
         }
     }
 }

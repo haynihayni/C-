@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Лаба_7__Windows_form_12__2
+namespace Лаба_8__Графік
 {
     static class Program
     {
