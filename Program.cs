@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Лаба_8__Графік
+namespace Лаба_8__Крива_Леві__варіант_17
 {
     static class Program
     {
